@@ -24,7 +24,7 @@ const isButtonDisabled = computed(() => !email.length || !password.length || isL
 <template>
   <form @submit.prevent="emitFormSubmit">
     <StyledInput
-      type="text"
+      type="email"
       placeholder="email"
       :disabled="isLoading"
       :value="email"
@@ -36,6 +36,7 @@ const isButtonDisabled = computed(() => !email.length || !password.length || isL
       :disabled="isLoading"
       :value="password"
       @input="emitPasswordUpdate"
+      minLength="6"
     />
     <StyledButton :disabled="isButtonDisabled" />
   </form>
