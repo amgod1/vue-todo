@@ -75,9 +75,7 @@ onMounted(() => {
   const userRef = ref(db, `users/${user.value}`)
 
   onValue(userRef, async (snapshot) => {
-    const todos = snapshot.val()
-
-    if (!todos) return
+    const todos = snapshot.val() || {}
 
     const pastDates = Object.keys(todos).filter((date) => date < dates[0])
 
