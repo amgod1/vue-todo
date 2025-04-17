@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, onMounted, computed } from 'vue'
-import { ref, set, onValue, push, update, remove } from 'firebase/database'
+import { ref, runTransaction, set, onValue, push, update, remove } from 'firebase/database'
 
 import { db } from '@/main'
 
@@ -19,15 +19,15 @@ const todoState = reactive({
   todos: [],
 })
 
-const { authState } = useAuth()
+const { user } = useAuth()
 
 const selectNewDate = (date) => (todoState.selectedDate = date)
 
 const addTodo = async () => {
-  if (!todoState.newTodo.length || !authState.user) return
+  if (!user.value || !todoState.newTodo.length) return
 
   try {
-    const newTodoRef = push(ref(db, `users/${authState.user}/${todoState.selectedDate}`))
+    const newTodoRef = push(ref(db, `users/${user.value}/${todoState.selectedDate}`))
     const todo = {
       id: newTodoRef.key,
       title: todoState.newTodo,
@@ -43,9 +43,10 @@ const addTodo = async () => {
 }
 
 const updateTodo = async (id, updatedParams) => {
+  if (!user.value) return
+
   try {
-    console.log(id, updatedParams)
-    const todoRef = ref(db, `users/${authState.user}/${todoState.selectedDate}/${id}`)
+    const todoRef = ref(db, `users/${user.value}/${todoState.selectedDate}/${id}`)
     await update(todoRef, updatedParams)
   } catch (error) {
     console.error(error)
@@ -53,8 +54,10 @@ const updateTodo = async (id, updatedParams) => {
 }
 
 const removeTodo = async (id) => {
+  if (!user.value) return
+
   try {
-    const todoRef = ref(db, `users/${authState.user}/${todoState.selectedDate}/${id}`)
+    const todoRef = ref(db, `users/${user.value}/${todoState.selectedDate}/${id}`)
     await remove(todoRef)
   } catch (error) {
     console.error(error)
@@ -66,28 +69,28 @@ const todosForSelectedDay = computed(() => {
   return dayTodos ? Object.values(dayTodos) : []
 })
 
-onMounted(async () => {
-  const fetchTodos = async () => {
-    if (!authState.user) return
+onMounted(() => {
+  if (!user.value) return
 
-    try {
-      const userTodosRef = ref(db, `users/${authState.user}`)
+  const userRef = ref(db, `users/${user.value}`)
 
-      onValue(userTodosRef, async (snapshot) => {
-        const todos = await snapshot.val()
+  onValue(userRef, async (snapshot) => {
+    const todos = snapshot.val()
 
-        if (todos) {
-          todoState.todos = todos
-        } else {
-          todoState.todos = []
-        }
-      })
-    } catch (error) {
-      console.error(error)
+    if (!todos) return
+
+    const pastDates = Object.keys(todos).filter((date) => date < dates[0])
+
+    if (pastDates.length) {
+      const cleanedTodos = Object.fromEntries(
+        Object.entries(todos).filter(([date]) => !pastDates.includes(date)),
+      )
+
+      await set(userRef, cleanedTodos)
     }
-  }
 
-  await fetchTodos()
+    todoState.todos = todos
+  })
 })
 </script>
 

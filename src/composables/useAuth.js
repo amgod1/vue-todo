@@ -1,64 +1,28 @@
-import { reactive } from 'vue'
-import {
-  getAuth,
-  onAuthStateChanged,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-} from 'firebase/auth'
+import { ref } from 'vue'
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 
-const authState = reactive({
-  email: '',
-  password: '',
-  isLoading: false,
-  user: localStorage.getItem('user') || null,
-})
-
-const setAndSaveUser = (currentUser) => {
-  if (currentUser) {
-    const userName = currentUser.slice(0, currentUser.indexOf('@'))
-    authState.user = userName
-    localStorage.setItem('user', userName)
-  } else {
-    authState.user = null
-    localStorage.removeItem('user')
-  }
-}
+const user = ref(localStorage.getItem('user') || null)
 
 export const useAuth = () => {
   const auth = getAuth()
 
-  const resetInputs = () => {
-    authState.email = ''
-    authState.password = ''
-  }
-
-  const onSubmit = async (isLogin) => {
-    authState.isLoading = true
-
-    try {
-      if (isLogin) {
-        await signInWithEmailAndPassword(auth, authState.email, authState.password)
-      } else {
-        await createUserWithEmailAndPassword(auth, authState.email, authState.password)
-      }
-    } catch (error) {
-      console.error(error)
-    }
-
-    authState.isLoading = false
-  }
-
   const logOut = async () => await signOut(auth)
 
   onAuthStateChanged(auth, (currentUser) => {
-    setAndSaveUser(currentUser?.email)
+    if (currentUser?.email) {
+      const { email } = currentUser
+
+      const userName = email.slice(0, email.indexOf('@'))
+      user.value = userName
+      localStorage.setItem('user', userName)
+    } else {
+      user.value = null
+      localStorage.removeItem('user')
+    }
   })
 
   return {
-    authState,
-    resetInputs,
-    onSubmit,
+    user,
     logOut,
   }
 }

@@ -35,11 +35,11 @@ const router = createRouter({
 })
 
 router.beforeEach((to, _, next) => {
-  const { authState } = useAuth()
+  const { user } = useAuth()
 
-  if (to.meta.requiresAuth && !authState.user) {
+  if (to.meta.requiresAuth && !user.value) {
     next('/auth/login')
-  } else if (to.path.startsWith('/auth') && authState.user) {
+  } else if (to.path.startsWith('/auth') && user.value) {
     next('/todos')
   } else {
     next()

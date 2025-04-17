@@ -1,41 +1,43 @@
 <script setup>
-import { useAuth } from '@/composables/useAuth'
-import { useRouter } from 'vue-router'
 import StyledInput from './ui/StyledInput.vue'
 import StyledButton from './ui/StyledButton.vue'
+import { computed } from 'vue'
 
-const { isLoginPage } = defineProps({ isLoginPage: Boolean })
+const { isLoginPage, email, password, isLoading } = defineProps({
+  isLoginPage: Boolean,
+  email: String,
+  password: String,
+  isLoading: Boolean,
+})
 
-const { authState, onSubmit } = useAuth()
+const emit = defineEmits(['update:email', 'update:password', 'submit'])
 
-const router = useRouter()
-
-const onSubmitHandler = async (isLogin) => {
-  console.log('submittin', authState.email, authState.password)
-
-  await onSubmit(isLogin)
-
-  router.push('/todos')
+const emitEmailUpdate = (e) => emit('update:email', e.target.value)
+const emitPasswordUpdate = (e) => emit('update:password', e.target.value)
+const emitFormSubmit = () => {
+  emit('submit')
 }
+
+const isButtonDisabled = computed(() => !email.length || !password.length || isLoading)
 </script>
 
 <template>
-  <form @submit.prevent="onSubmitHandler(isLoginPage)">
+  <form @submit.prevent="emitFormSubmit">
     <StyledInput
       type="text"
       placeholder="email"
-      v-model="authState.email"
-      :disabled="authState.isLoading"
+      :disabled="isLoading"
+      :value="email"
+      @input="emitEmailUpdate"
     />
     <StyledInput
       type="password"
       placeholder="password"
-      v-model="authState.password"
-      :disabled="authState.isLoading"
+      :disabled="isLoading"
+      :value="password"
+      @input="emitPasswordUpdate"
     />
-    <StyledButton
-      :disabled="!authState.email.length || !authState.password.length || authState.isLoading"
-    />
+    <StyledButton :disabled="isButtonDisabled" />
   </form>
 </template>
 
