@@ -70,7 +70,7 @@ const editButtonTitle = computed(() => (editState.isEditActive ? 'cancel' : 'edi
         ref="inputRef"
         class="edit-input"
       ></StyledInput>
-      <h4 v-else>{{ todo.title }}</h4>
+      <h4 v-else :class="{ done: todo.done }">{{ todo.title }}</h4>
     </div>
     <div class="buttons-wrapper">
       <StyledButton @click="emitTitleUpdate" v-if="editState.isEditActive">save</StyledButton>
@@ -105,6 +105,10 @@ input[type='checkbox'] {
 
 h4 {
   font-size: 20px;
+}
+
+.done {
+  text-decoration: line-through;
 }
 
 .edit-input {
