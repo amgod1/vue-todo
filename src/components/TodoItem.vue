@@ -1,28 +1,65 @@
 <script setup>
+import { computed, reactive } from 'vue'
 import StyledButton from './ui/StyledButton.vue'
+import StyledInput from './ui/StyledInput.vue'
 
 const { todo } = defineProps({
   todo: Object,
 })
 
-const emit = defineEmits(['remove-todo', 'toggle-todo'])
+const editState = reactive({
+  isEditActive: false,
+  updatedTitle: todo.title,
+})
+
+const emit = defineEmits(['update-todo', 'remove-todo'])
+
+const emitStatusUpdate = () => {
+  emit('update-todo', todo.id, { done: !todo.done })
+}
 
 const emitRemove = () => {
   emit('remove-todo', todo.id)
 }
 
-const emitToggle = () => {
-  emit('toggle-todo', todo.id)
+const emitTitleUpdate = () => {
+  if (editState.updatedTitle.trim().length === 0) {
+    emitRemove()
+    return
+  }
+
+  if (editState.updatedTitle !== todo.title) {
+    emit('update-todo', todo.id, { title: editState.updatedTitle })
+  } else {
+    editState.updatedTitle = todo.title
+  }
+
+  editState.isEditActive = false
 }
+
+const toggleEdit = () => {
+  if (editState.isEditActive) {
+    editState.updatedTitle = todo.title
+  }
+
+  editState.isEditActive = !editState.isEditActive
+}
+
+const editButtonTitle = computed(() => (editState.isEditActive ? 'cancel' : 'edit'))
 </script>
 
 <template>
   <div>
     <div>
-      <input type="checkbox" :checked="todo.done" @change="emitToggle" />
-      <h4>{{ todo.title }}</h4>
+      <input type="checkbox" :checked="todo.done" @change="emitStatusUpdate" />
+      <StyledInput v-if="editState.isEditActive" v-model="editState.updatedTitle"></StyledInput>
+      <h4 v-else>{{ todo.title }}</h4>
     </div>
-    <StyledButton @click="emitRemove">delete</StyledButton>
+    <div>
+      <StyledButton @click="emitTitleUpdate" v-if="editState.isEditActive">save</StyledButton>
+      <StyledButton @click="toggleEdit">{{ editButtonTitle }}</StyledButton>
+      <StyledButton @click="emitRemove">delete</StyledButton>
+    </div>
   </div>
 </template>
 

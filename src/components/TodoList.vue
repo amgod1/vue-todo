@@ -8,26 +8,26 @@ const { todosForSelectedDay } = defineProps({
   },
 })
 
-const emit = defineEmits(['remove-todo', 'toggle-todo'])
+const emit = defineEmits(['update-todo', 'remove-todo'])
+
+const emitUpdate = (id, updatedParams) => {
+  emit('update-todo', id, updatedParams)
+}
 
 const emitRemove = (id) => {
   emit('remove-todo', id)
 }
-
-const emitToggle = (id) => {
-  emit('toggle-todo', id)
-}
 </script>
 
 <template>
-  <section>
+  <section v-if="todosForSelectedDay.length">
     <h3>Todo List:</h3>
     <TodoItem
       v-for="todo in todosForSelectedDay"
       :key="todo.id"
       :todo="todo"
+      @update-todo="emitUpdate"
       @remove-todo="emitRemove"
-      @toggle-todo="emitToggle"
     />
   </section>
 </template>

@@ -42,12 +42,11 @@ const addTodo = async () => {
   todoState.newTodo = ''
 }
 
-const toggleTodo = async (id) => {
+const updateTodo = async (id, updatedParams) => {
   try {
+    console.log(id, updatedParams)
     const todoRef = ref(db, `users/${authState.user}/${todoState.selectedDate}/${id}`)
-    const currentStatus = todoState.todos[todoState.selectedDate][id].done
-
-    await update(todoRef, { done: !currentStatus })
+    await update(todoRef, updatedParams)
   } catch (error) {
     console.error(error)
   }
@@ -63,7 +62,8 @@ const removeTodo = async (id) => {
 }
 
 const todosForSelectedDay = computed(() => {
-  return todoState.todos[todoState.selectedDate] || []
+  const dayTodos = todoState.todos[todoState.selectedDate]
+  return dayTodos ? Object.values(dayTodos) : []
 })
 
 onMounted(async () => {
@@ -102,8 +102,8 @@ onMounted(async () => {
     <AddTodo v-model="todoState.newTodo" @add-todo="addTodo" />
     <TodoList
       :todosForSelectedDay="todosForSelectedDay"
+      @update-todo="updateTodo"
       @remove-todo="removeTodo"
-      @toggle-todo="toggleTodo"
     />
   </main>
 </template>
