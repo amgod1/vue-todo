@@ -27,6 +27,10 @@ const router = createRouter({
         isLoginPage: false,
       },
     },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/auth/login',
+    },
   ],
 })
 
