@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive } from 'vue'
+import { computed, reactive, ref, nextTick } from 'vue'
 import StyledButton from './ui/StyledButton.vue'
 import StyledInput from './ui/StyledInput.vue'
 
@@ -7,6 +7,7 @@ const { todo } = defineProps({
   todo: Object,
 })
 
+const inputRef = ref(null)
 const editState = reactive({
   isEditActive: false,
   updatedTitle: todo.title,
@@ -37,38 +38,63 @@ const emitTitleUpdate = () => {
   editState.isEditActive = false
 }
 
-const toggleEdit = () => {
+const toggleEdit = async () => {
   if (editState.isEditActive) {
     editState.updatedTitle = todo.title
   }
 
   editState.isEditActive = !editState.isEditActive
+
+  if (editState.isEditActive) {
+    nextTick(() => {
+      inputRef.value?.focus()
+    })
+  }
 }
 
 const editButtonTitle = computed(() => (editState.isEditActive ? 'cancel' : 'edit'))
 </script>
 
 <template>
-  <div>
-    <div>
-      <input type="checkbox" :checked="todo.done" @change="emitStatusUpdate" />
-      <StyledInput v-if="editState.isEditActive" v-model="editState.updatedTitle"></StyledInput>
+  <section class="todo-item-wrapper">
+    <div class="inputs-wrapper">
+      <input
+        type="checkbox"
+        :checked="todo.done"
+        :disabled="editState.isEditActive"
+        @change="emitStatusUpdate"
+      />
+      <StyledInput
+        v-if="editState.isEditActive"
+        v-model="editState.updatedTitle"
+        ref="inputRef"
+        class="edit-input"
+      ></StyledInput>
       <h4 v-else>{{ todo.title }}</h4>
     </div>
-    <div>
+    <div class="buttons-wrapper">
       <StyledButton @click="emitTitleUpdate" v-if="editState.isEditActive">save</StyledButton>
       <StyledButton @click="toggleEdit">{{ editButtonTitle }}</StyledButton>
       <StyledButton @click="emitRemove">delete</StyledButton>
     </div>
-  </div>
+  </section>
 </template>
 
 <style scoped>
-div {
+.todo-item-wrapper {
   display: flex;
+  flex-direction: row;
   gap: 10px;
   align-items: center;
   justify-content: space-between;
+}
+
+.inputs-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
 }
 
 input[type='checkbox'] {
@@ -79,5 +105,15 @@ input[type='checkbox'] {
 
 h4 {
   font-size: 20px;
+}
+
+.edit-input {
+  width: 100%;
+}
+
+.buttons-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
 </style>
