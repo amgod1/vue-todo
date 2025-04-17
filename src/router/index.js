@@ -3,7 +3,7 @@ import TodoView from '../views/TodoView.vue'
 import { useAuth } from '@/composables/useAuth'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes: [
     {
       path: '/todos',
