@@ -1,20 +1,43 @@
 import { ref } from 'vue'
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { authService } from '@/services/authService'
 
-const user = ref(localStorage.getItem('user') || null)
+const user = ref(JSON.parse(localStorage.getItem('user')) || null)
 
 export const useAuth = () => {
   const auth = getAuth()
 
-  const logOut = async () => await signOut(auth)
+  const isLoading = ref(false)
+
+  const handler = async (callback) => {
+    try {
+      isLoading.value = true
+      await callback()
+    } catch (error) {
+      console.error(error)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const signIn = async (email, password) => {
+    await handler(() => authService.signIn(auth, email, password))
+  }
+
+  const signUp = async (email, password) => {
+    await handler(() => authService.signUp(auth, email, password))
+  }
+
+  const signOut = async () => {
+    await handler(() => authService.signOut(auth))
+  }
 
   onAuthStateChanged(auth, (currentUser) => {
-    if (currentUser?.email) {
-      const { email } = currentUser
+    if (currentUser?.uid) {
+      const { uid } = currentUser
 
-      const userName = email.slice(0, email.indexOf('@'))
-      user.value = userName
-      localStorage.setItem('user', userName)
+      user.value = uid
+      localStorage.setItem('user', JSON.stringify(uid))
     } else {
       user.value = null
       localStorage.removeItem('user')
@@ -23,6 +46,9 @@ export const useAuth = () => {
 
   return {
     user,
-    logOut,
+    isLoading,
+    signIn,
+    signUp,
+    signOut,
   }
 }

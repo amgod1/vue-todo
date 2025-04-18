@@ -4,12 +4,10 @@ import { useAuth } from '@/composables/useAuth'
 import StyledButton from './ui/StyledButton.vue'
 
 const router = useRouter()
-const { user, logOut } = useAuth()
+const { user, signOut } = useAuth()
 
 const handleClick = async () => {
-  if (user.value) {
-    await logOut()
-  }
+  await signOut()
 
   router.push('/auth/login')
 }
@@ -17,7 +15,7 @@ const handleClick = async () => {
 
 <template>
   <header>
-    <h2>{{ user }}</h2>
+    <!-- <h2>{{ user.email }}</h2> -->
     <StyledButton @click="handleClick">{{ user ? 'Logout' : 'Login' }}</StyledButton>
   </header>
 </template>
@@ -26,7 +24,7 @@ const handleClick = async () => {
 header {
   height: 80px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   border-bottom: 2px solid var(--color-background-soft);
 }

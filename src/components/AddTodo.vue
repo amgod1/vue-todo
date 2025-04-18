@@ -6,14 +6,14 @@ const props = defineProps({
   modelValue: String,
 })
 
-const emit = defineEmits(['update:modelValue', 'add-todo'])
+const emit = defineEmits(['update:modelValue', 'create-todo'])
 
 const updateInput = (value) => {
   emit('update:modelValue', value)
 }
 
 const handleClick = () => {
-  emit('add-todo')
+  emit('create-todo')
 }
 </script>
 

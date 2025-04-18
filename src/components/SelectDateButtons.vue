@@ -1,11 +1,12 @@
 <script setup>
 import { formatDate } from '@/utils/formatDate'
+import { getDates } from '@/utils/getDates'
 
-const { dates, selectedDate } = defineProps({
-  dates: Array,
+const { selectedDate } = defineProps({
   selectedDate: String,
 })
 
+const dates = getDates()
 const emit = defineEmits(['select-new-date'])
 
 const selectDate = (date) => {

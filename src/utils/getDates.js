@@ -6,3 +6,5 @@ export const getDates = () =>
 
     return date.toISOString().split('T')[0]
   })
+
+export const getCurrentDate = () => new Date().toISOString().split('T')[0]

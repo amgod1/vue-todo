@@ -1,34 +1,26 @@
 <script setup>
 import { reactive, computed, defineProps } from 'vue'
 import { useRouter, RouterLink, onBeforeRouteLeave } from 'vue-router'
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+
+import { useAuth } from '@/composables/useAuth'
+
 import AuthForm from '@/components/AuthForm.vue'
 
 const router = useRouter()
-const authState = reactive({
+const authFormValues = reactive({
   email: '',
   password: '',
-  isLoading: false,
 })
 
 const { isLoginPage } = defineProps({ isLoginPage: Boolean })
+const { isLoading, signIn, signUp } = useAuth()
 
-const onSubmit = async () => {
-  const auth = getAuth()
-
-  authState.isLoading = true
-
-  try {
-    if (isLoginPage) {
-      await signInWithEmailAndPassword(auth, authState.email, authState.password)
-    } else {
-      await createUserWithEmailAndPassword(auth, authState.email, authState.password)
-    }
-  } catch (error) {
-    console.error(error)
+const onFormSubmit = async () => {
+  if (isLoginPage) {
+    await signIn(authFormValues.email, authFormValues.password)
+  } else {
+    await signUp(authFormValues.email, authFormValues.password)
   }
-
-  authState.isLoading = false
 
   router.push('/todos')
 }
@@ -40,8 +32,8 @@ const authViewLinkTitle = computed(() =>
 )
 
 onBeforeRouteLeave((_, __, next) => {
-  authState.email = ''
-  authState.password = ''
+  authFormValues.email = ''
+  authFormValues.password = ''
 
   next()
 })
@@ -53,10 +45,10 @@ onBeforeRouteLeave((_, __, next) => {
 
     <AuthForm
       :isLoginPage="isLoginPage"
-      :isLoading="authState.isLoading"
-      v-model:email="authState.email"
-      v-model:password="authState.password"
-      @submit="onSubmit"
+      :isLoading="isLoading"
+      v-model:email="authFormValues.email"
+      v-model:password="authFormValues.password"
+      @submit="onFormSubmit"
     />
 
     <RouterLink :to="authViewLinkTo">
