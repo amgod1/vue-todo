@@ -1,13 +1,13 @@
 <script setup>
 import { useRouter } from 'vue-router'
-import { useAuth } from '@/composables/useAuth'
+import { useAuthStore } from '@/stores/auth'
 import StyledButton from './ui/StyledButton.vue'
 
 const router = useRouter()
-const { user, signOut } = useAuth()
+const authStore = useAuthStore()
 
 const handleClick = async () => {
-  await signOut()
+  await authStore.signOut()
 
   router.push('/auth/login')
 }
@@ -15,8 +15,7 @@ const handleClick = async () => {
 
 <template>
   <header>
-    <!-- <h2>{{ user.email }}</h2> -->
-    <StyledButton @click="handleClick">{{ user ? 'Logout' : 'Login' }}</StyledButton>
+    <StyledButton @click="handleClick">{{ authStore.user ? 'Logout' : 'Login' }}</StyledButton>
   </header>
 </template>
 

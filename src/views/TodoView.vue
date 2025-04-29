@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onMounted, computed, onUnmounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
-import { useTodo } from '@/composables/useTodo'
+import { useTodoStore } from '@/stores/todo'
 
 import SelectDateButtons from '@/components/SelectDateButtons.vue'
 import AddTodo from '@/components/AddTodo.vue'
@@ -12,27 +12,27 @@ import { getCurrentDate } from '@/utils/getDates'
 const newTodo = ref('')
 const selectedDate = ref(getCurrentDate())
 
-const { fetchTodos, getTodosForSelectedDay, createTodo, updateTodo, deleteTodo } = useTodo()
+const todoStore = useTodoStore()
 
 const selectNewDate = (date) => (selectedDate.value = date)
 
 const createTodoHandler = async () => {
-  await createTodo(selectedDate.value, newTodo.value)
+  await todoStore.createTodo(selectedDate.value, newTodo.value)
   newTodo.value = ''
 }
 
 const updateTodoHandler = async (id, updateDto) => {
-  await updateTodo(selectedDate.value, id, updateDto)
+  await todoStore.updateTodo(selectedDate.value, id, updateDto)
 }
 
 const deleteTodoHandler = async (id) => {
-  await deleteTodo(selectedDate.value, id)
+  await todoStore.deleteTodo(selectedDate.value, id)
 }
 
-const todosForSelectedDay = computed(() => getTodosForSelectedDay(selectedDate.value))
+const todosForSelectedDay = computed(() => todoStore.getTodosForSelectedDay(selectedDate.value))
 
 onMounted(async () => {
-  await fetchTodos()
+  await todoStore.fetchTodos()
 })
 </script>
 

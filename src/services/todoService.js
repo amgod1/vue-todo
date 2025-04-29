@@ -12,6 +12,10 @@ export const todoService = {
   },
 
   async create(userId, date, todoTitle) {
+    if (!todoTitle.trim()) {
+      throw new Error('You cant add empty todo!')
+    }
+
     const newTodoRef = push(ref(db, `users/${userId}/${date}`))
 
     const todo = {

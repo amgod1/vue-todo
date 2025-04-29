@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import TodoView from '../views/TodoView.vue'
-import { useAuth } from '@/composables/useAuth'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
-      path: '/todos',
+      path: '/:uid/todos',
       name: 'Todos',
       component: TodoView,
       meta: { requiresAuth: true },
@@ -35,12 +35,12 @@ const router = createRouter({
 })
 
 router.beforeEach((to, _, next) => {
-  const { user } = useAuth()
+  const authStore = useAuthStore()
 
-  if (to.meta.requiresAuth && !user.value) {
+  if (to.meta.requiresAuth && !authStore.user) {
     next('/auth/login')
-  } else if (to.path.startsWith('/auth') && user.value) {
-    next('/todos')
+  } else if (to.path.startsWith('/auth') && authStore.user) {
+    next(`/${authStore.user}/todos`)
   } else {
     next()
   }
