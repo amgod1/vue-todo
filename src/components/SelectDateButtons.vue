@@ -17,11 +17,12 @@ const isActive = (date) => selectedDate === date
 </script>
 
 <template>
-  <div>
+  <div class="buttons-wrapper">
     <button
       v-for="date in dates"
       :key="date.id"
       @click="selectDate(date)"
+      class="date-button"
       :class="{ active: isActive(date) }"
     >
       {{ formatDate(date) }}
@@ -30,7 +31,7 @@ const isActive = (date) => selectedDate === date
 </template>
 
 <style scoped>
-div {
+.buttons-wrapper {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -40,38 +41,43 @@ div {
   gap: 10px;
 }
 
-div::-webkit-scrollbar {
+.buttons-wrapper::-webkit-scrollbar {
   height: 8px;
 }
 
-div::-webkit-scrollbar-thumb {
-  background-color: #888;
+.buttons-wrapper::-webkit-scrollbar-track {
+  background-color: var(--scrollbar-track);
   border-radius: 4px;
 }
 
-div::-webkit-scrollbar-thumb:hover {
-  background-color: #555;
+.buttons-wrapper::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 4px;
 }
 
-div button {
+.buttons-wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+.date-button {
   min-width: 100px;
   text-decoration: none;
   background-color: var(--color-background-soft);
   border: 0;
-  color: var(--color-text);
+  color: var(--color-button-text);
   font-size: 15px;
   padding: 15px;
   border: 2px solid transparent;
 
   &:hover {
     cursor: pointer;
-    background: transparent;
-    border: 2px solid #888;
+    color: var(--color-button-hover-text);
+    background: var(--color-button-hover-bg);
+    border: 2px solid var(--color-button-border);
   }
 }
 
-button.active {
-  background: transparent;
-  border: 2px solid #888;
+.date-button.active {
+  border: 2px solid var(--color-button-border);
 }
 </style>

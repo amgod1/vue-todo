@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
 import { todoService } from '@/services/todoService'
@@ -6,15 +6,17 @@ import { tryCatchHandler } from '@/utils/tryCatchHandler'
 import { useToast } from '@/composables/useToast'
 import { TOAST_TYPES } from '@/constants/toasts'
 
-const deletedTodos = ref([])
 export const useTodoStore = defineStore('todo', () => {
   const { showToast, removeToast } = useToast()
   const todos = ref({})
+  const softDeleteTimeouts = reactive({})
   const authStore = useAuthStore()
 
   const getTodosForSelectedDay = (selectedDate) => {
     const dayTodos = todos.value[selectedDate]
-    return dayTodos ? Object.values(todos.value[selectedDate]) : []
+    return dayTodos
+      ? Object.values(todos.value[selectedDate]).filter((todo) => !softDeleteTimeouts[todo.id])
+      : []
   }
 
   const fetchTodos = async () => {
@@ -50,21 +52,17 @@ export const useTodoStore = defineStore('todo', () => {
       await tryCatchHandler(() => todoService.delete(authStore.user, date, id))
     }, 3000)
 
-    deletedTodos.value.push({ id, timeoutId })
+    softDeleteTimeouts[id] = timeoutId
 
-    showToast(TOAST_TYPES.TODO_DELETE, 'success', id)
+    showToast(TOAST_TYPES.TODO_DELETE, 'success', { todoId: id })
   }
 
-  const undoDelete = (toastId, deletedId) => {
-    if (!date || !id || !todo) return
+  const undoDelete = (toastId, toastPayload) => {
+    const { todoId } = toastPayload
 
-    clearTimeout(timeoutId)
+    clearTimeout(softDeleteTimeouts[todoId])
+    delete softDeleteTimeouts[todoId]
 
-    if (!todos.value[date]) {
-      todos.value[date] = {}
-    }
-
-    todos.value[date][id] = todo
     removeToast(toastId)
   }
 

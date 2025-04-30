@@ -52,7 +52,7 @@ const toggleEdit = async () => {
   }
 }
 
-const editButtonTitle = computed(() => (editState.isEditActive ? 'cancel' : 'edit'))
+const editButtonTitle = computed(() => (editState.isEditActive ? 'Cancel' : 'Edit'))
 </script>
 
 <template>
@@ -63,6 +63,7 @@ const editButtonTitle = computed(() => (editState.isEditActive ? 'cancel' : 'edi
         :checked="todo.done"
         :disabled="editState.isEditActive"
         @change="emitStatusUpdate"
+        class="checkbox-input"
       />
       <StyledInput
         v-if="editState.isEditActive"
@@ -70,12 +71,12 @@ const editButtonTitle = computed(() => (editState.isEditActive ? 'cancel' : 'edi
         ref="inputRef"
         class="edit-input"
       ></StyledInput>
-      <h4 v-else :class="{ done: todo.done }">{{ todo.title }}</h4>
+      <p v-else class="todo-text" :class="{ done: todo.done }">{{ todo.title }}</p>
     </div>
     <div class="buttons-wrapper">
-      <StyledButton @click="emitTitleUpdate" v-if="editState.isEditActive">save</StyledButton>
+      <StyledButton @click="emitTitleUpdate" v-if="editState.isEditActive">Save</StyledButton>
       <StyledButton @click="toggleEdit">{{ editButtonTitle }}</StyledButton>
-      <StyledButton @click="emitRemove">delete</StyledButton>
+      <StyledButton @click="emitRemove">Delete</StyledButton>
     </div>
   </section>
 </template>
@@ -97,17 +98,17 @@ const editButtonTitle = computed(() => (editState.isEditActive ? 'cancel' : 'edi
   align-items: center;
 }
 
-input[type='checkbox'] {
+.checkbox-input {
   cursor: pointer;
   width: 20px;
   height: 20px;
 }
 
-h4 {
+.todo-text {
   font-size: 20px;
 }
 
-.done {
+.todo-text.done {
   text-decoration: line-through;
 }
 

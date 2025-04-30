@@ -1,56 +1,35 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
-  --vt-c-white: #ffffff;
-  --vt-c-white-soft: #f8f8f8;
-  --vt-c-white-mute: #f2f2f2;
+  --color-background: #0f0d1a;
+  --color-text: #e0d7ff;
 
-  --vt-c-black: #181818;
-  --vt-c-black-soft: #222222;
-  --vt-c-black-mute: #282828;
+  --color-button-bg: #1b1244;
+  --color-button-text: #a78bfa;
+  --color-button-border: #4b3a9b;
 
-  --vt-c-indigo: #2c3e50;
+  --color-button-hover-bg: #2a1d67;
+  --color-button-hover-text: #ffffff;
 
-  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
-  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+  --scrollbar-thumb: #3e3366;
+  --scrollbar-thumb-hover: #5a4a94;
+  --scrollbar-track: #1a162e;
 
-  --vt-c-text-light-1: var(--vt-c-indigo);
-  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
-  --vt-c-text-dark-1: var(--vt-c-white);
-  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  --toast-success-border: #2ecc71;
+  --toast-success-bg: #1e2f27;
+  --toast-success-text: #a9f5c5;
+
+  --toast-error-border: #e74c3c;
+  --toast-error-bg: #2c1f1e;
+  --toast-error-text: #f5a9a9;
+
+  --toast-undo-btn-bg: transparent;
+  --toast-undo-btn-text: #a9f5c5;
+  --toast-undo-btn-border: 1px solid #2ecc71;
+  --toast-undo-btn-hover-bg: #2ecc71;
+  --toast-undo-btn-hover-text: #0d1f15;
 }
 
-/* semantic color variables for this project */
-:root {
-  --color-background: var(--vt-c-white);
-  --color-background-soft: var(--vt-c-white-soft);
-  --color-background-mute: var(--vt-c-white-mute);
-
-  --color-border: var(--vt-c-divider-light-2);
-  --color-border-hover: var(--vt-c-divider-light-1);
-
-  --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
-
-  --section-gap: 160px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
-
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
-
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
-  }
-}
-
-*,
+*/ *,
 *::before,
 *::after {
   box-sizing: border-box;
@@ -83,4 +62,14 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
 }

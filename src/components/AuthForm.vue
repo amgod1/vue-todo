@@ -42,7 +42,7 @@ onBeforeRouteLeave((_, __, next) => {
 </script>
 
 <template>
-  <form @submit.prevent="onFormSubmit">
+  <form @submit.prevent="onFormSubmit" class="auth-form">
     <StyledInput
       type="email"
       placeholder="email"
@@ -61,7 +61,7 @@ onBeforeRouteLeave((_, __, next) => {
 </template>
 
 <style>
-form {
+.auth-form {
   margin: 0 auto;
   width: 300px;
   display: flex;

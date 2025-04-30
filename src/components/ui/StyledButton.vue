@@ -1,6 +1,7 @@
 <script setup>
 defineProps({
   disabled: Boolean,
+  undo: Boolean,
 })
 
 const emit = defineEmits(['click'])
@@ -16,7 +17,7 @@ const handleClick = (event) => {
     @click="handleClick"
     :disabled="disabled"
     class="styled-button"
-    :class="{ disabled: disabled && 'disabled' }"
+    :class="{ disabled: disabled, undo: undo }"
   >
     <slot>submit</slot>
   </button>
@@ -25,21 +26,33 @@ const handleClick = (event) => {
 <style scoped>
 .styled-button {
   text-decoration: none;
-  background: transparent;
-  border: 2px solid var(--color-background-soft);
+  background: var(--color-button-bg);
+  border: 2px solid var(--color-button-border);
   color: var(--color-text);
   font-size: 20px;
   vertical-align: middle;
-  height: 50px;
-  padding: 0 10px;
+  padding: 10px;
 
   &:hover {
     cursor: pointer;
-    background-color: var(--color-background-soft);
+    color: var(--color-button-hover-text);
+    background-color: var(--color-button-hover-bg);
   }
-  &.disabled {
-    background: transparent;
-    cursor: not-allowed;
-  }
+}
+
+.styled-button.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.styled-button.undo {
+  background-color: var(--toast-undo-btn-bg);
+  color: var(--toast-undo-btn-text);
+  border: var(--toast-undo-btn-border);
+}
+
+.styled-button.undo:hover {
+  background-color: var(--toast-undo-btn-hover-bg);
+  color: var(--toast-undo-btn-hover-text);
 }
 </style>

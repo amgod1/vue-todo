@@ -14,13 +14,13 @@ const handleClick = async () => {
 </script>
 
 <template>
-  <header>
+  <header class="header">
     <StyledButton @click="handleClick">{{ authStore.user ? 'Logout' : 'Login' }}</StyledButton>
   </header>
 </template>
 
 <style>
-header {
+.header {
   height: 80px;
   display: flex;
   justify-content: flex-end;

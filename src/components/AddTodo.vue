@@ -19,8 +19,8 @@ const handleClick = () => {
 
 <template>
   <section>
-    <h3>Add new todo:</h3>
-    <div>
+    <h2>Add new todo:</h2>
+    <div class="input-wrapper">
       <StyledInput :modelValue="modelValue" @update:modelValue="updateInput" class="add-input" />
       <StyledButton @click="handleClick">Add</StyledButton>
     </div>
@@ -28,7 +28,7 @@ const handleClick = () => {
 </template>
 
 <style scoped>
-section div {
+.input-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -37,6 +37,5 @@ section div {
 
 .add-input {
   width: 100%;
-  height: 50px;
 }
 </style>

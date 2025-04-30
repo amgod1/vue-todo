@@ -20,14 +20,14 @@ const undoDeleteHandler = () => {
 <template>
   <div class="toast-item" :class="toast.status">
     <p>{{ message }}</p>
-    <StyledButton v-if="isDelete" @click="undoDeleteHandler">undo</StyledButton>
+    <StyledButton v-if="isDelete" @click="undoDeleteHandler" :undo="isDelete">Undo</StyledButton>
   </div>
 </template>
 
 <style scoped>
 .toast-item {
-  padding: 20px;
-  height: 80px;
+  padding: 0 20px;
+  height: 60px;
   width: 250px;
 
   display: flex;
@@ -35,15 +35,18 @@ const undoDeleteHandler = () => {
   justify-content: space-between;
 
   font-size: medium;
-  background-color: var(--color-background-soft);
   border: 1px solid #888;
 }
 
-.success {
-  border: 1px solid greenyellow;
+.toast-item.success {
+  border-color: var(--toast-success-border);
+  background-color: var(--toast-success-bg);
+  color: var(--toast-success-text);
 }
 
-.error {
-  border: 1px solid red;
+.toast-item.error {
+  border-color: var(--toast-error-border);
+  background-color: var(--toast-error-bg);
+  color: var(--toast-error-text);
 }
 </style>

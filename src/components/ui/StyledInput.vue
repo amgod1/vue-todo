@@ -27,7 +27,7 @@ defineExpose({
 <style scoped>
 .styled-input {
   height: 40px;
-  padding: 10px;
+  padding: 0 10px;
   font-size: 15px;
 
   &:focus {

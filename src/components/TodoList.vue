@@ -20,7 +20,7 @@ const emitRemove = (id) => {
 </script>
 
 <template>
-  <section v-if="todosForSelectedDay.length">
+  <section v-if="todosForSelectedDay.length" class="list-wrapper">
     <h3>Todo List:</h3>
     <TodoItem
       v-for="todo in todosForSelectedDay"
@@ -33,7 +33,7 @@ const emitRemove = (id) => {
 </template>
 
 <style scoped>
-section {
+.list-wrapper {
   display: flex;
   flex-direction: column;
   gap: 10px;
